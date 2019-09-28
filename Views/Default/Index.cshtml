@@ -1,0 +1,46 @@
+﻿@model WebApplication29.Models.TravaliaModel
+@{
+    ViewBag.Title = "Index";
+}
+
+<script src="~/Scripts/jquery-1.10.2.js"></script>
+<h2>Cascading Dropdownlist</h2>
+<table>
+    <tr>
+        <td>
+            <label>State</label>
+        </td>
+        <td>
+            @Html.DropDownListFor(x => x.State, Model.State, "--Select--", new { @id = "ddlState" });
+        </td>
+    </tr>
+    <tr>
+        <td>
+            <label>District</label>
+        </td>
+        <td id="District">
+            @Html.DropDownListFor(x => x.District, new List<SelectListItem>(), "--Select--", new { @id = "ddlDistrict" });
+        </td>
+    </tr>
+</table>
+<script type="text/javascript">
+    $(document).ready(function () {
+        $('#ddlState').change(function () {
+            $.ajax({
+                type: "post",
+                url: "/Default/GetDistrict",
+                data: { Id: $('#ddlState').val() },
+                datatype: "json",
+                success: function (data) {
+                    var district = "<select id='ddlDistrict'>";
+                    district = district + '<option value="">--Select--</option>';
+                    for (var i = 0; i < data.length; i++) {
+                        district = district + '<option value=' + data[i].Value + '>' + data[i].Text + '</option>';
+                    }
+                    district = district + '</select>';
+                    $('#District').html(district);
+                }
+            });
+        });
+    });
+</script>  
